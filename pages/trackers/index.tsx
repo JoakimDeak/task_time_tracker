@@ -1,7 +1,8 @@
 import { FC, useState } from 'react';
-import { Container, Paper, useTheme } from '@mui/material';
+import { Container, Paper } from '@mui/material';
 import Tracker from './Tracker';
 import { v4 as uuid } from 'uuid';
+import TrackerCreator from './TrackerCreator';
 
 export interface Timer {
   name: string;
@@ -11,23 +12,19 @@ export interface Timer {
   lastStarted: number;
 }
 
-// temp for testing
-const generateTimers = (num: number): Timer[] => {
-  const timers: Timer[] = [];
-  for (let i = 0; i < num; i++) {
-    timers.push({
-      name: `POF-${(Math.random() * 2000) | 0}`,
-      seconds: Math.random() * 40000,
-      id: uuid(),
-      isActive: true,
-      lastStarted: Date.now()
-    });
-  }
-  return timers;
-};
-
 const Trackers: FC = () => {
-  const [timers, setTimers] = useState(generateTimers(10));
+  const [timers, setTimers] = useState<Timer[]>([]);
+
+  const addTimer = () => {
+    const newTimer = {
+      name: '',
+      seconds: 0,
+      id: uuid(),
+      isActive: false,
+      lastStarted: Date.now()
+    };
+    setTimers([...timers, newTimer]);
+  };
 
   const onDeleteTimer = (id: string) => {
     setTimers(timers.filter((timer) => timer.id !== id));
@@ -37,8 +34,9 @@ const Trackers: FC = () => {
     <Container sx={{ marginTop: 10, maxWidth: 'md' }}>
       <Paper sx={{ padding: 2 }}>
         {timers.map((timer) => (
-          <Tracker key={timer.id} timer={timer} onDelete={onDeleteTimer} />
+          <Tracker key={timer.id} defaultTimer={timer} onDelete={onDeleteTimer} defaultIsEditing={!timer.name} />
         ))}
+        <TrackerCreator onCreate={addTimer} />
       </Paper>
     </Container>
   );
