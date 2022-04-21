@@ -3,7 +3,7 @@ import { createTheme } from '@mui/material';
 /**
  
   color palette idea
-  background of #2c0e37 or a dark gray would probably be better like #131b26, #06191d, #1e1c1c, #212121
+  background of #2c0e37 or a dark gray would probably be better like #131b26, #212121
   ui elements of #690375
   text of #fcfaf9
 
@@ -16,6 +16,19 @@ import { createTheme } from '@mui/material';
 
  */
 
-const theme = createTheme({});
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#0747A6'
+    },
+    text: {
+      primary: '#ddd'
+    },
+    background: {
+      default: 'fff',
+      paper: '#fcfaf9'
+    }
+  }
+});
 
 export default theme;
