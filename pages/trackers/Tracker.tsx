@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from 'react';
-import { Paper, Grid, styled, Theme, IconButton, useTheme, TextField } from '@mui/material';
+import { Paper, Grid, styled, Theme, IconButton, useTheme, TextField, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -56,10 +56,12 @@ const Tracker: FC<Props> = (props) => {
   };
 
   const { onDelete } = props;
+
+  const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   return (
-    <Paper sx={{ margin: 2, backgroundColor: theme.palette.primary.main }}>
+    <Paper sx={{ margin: isMobile ? 0 : 2, marginBottom: 2, backgroundColor: theme.palette.primary.main }}>
       <Grid container>
-        <Grid container item xs={8} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <Grid container item xs={12} sm={8} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
           {isEditing ? (
             <TextField
               onKeyPress={(ev) => {
@@ -95,7 +97,7 @@ const Tracker: FC<Props> = (props) => {
           )}
           <TrackerLabel>{getDisplayTime(elapsedTime / 1000 + timer.seconds)}</TrackerLabel>
         </Grid>
-        <Grid container item xs={4} sx={{ justifyContent: 'flex-end' }}>
+        <Grid container item xs={12} sm={4} sx={{ justifyContent: 'flex-end' }}>
           <TrackerButton onClick={() => (timer.isActive ? stopTimer() : startTimer())}>{timer.isActive ? <PauseIcon /> : <PlayArrowIcon />}</TrackerButton>
           <TrackerButton onClick={() => isValid(timer.name) && setIsEditing(!isEditing)}>{isEditing ? <CheckIcon /> : <EditIcon />}</TrackerButton>
           <TrackerButton onClick={() => onDelete(timer.id)}>

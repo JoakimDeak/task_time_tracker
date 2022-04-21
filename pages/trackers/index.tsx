@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { Container, Paper } from '@mui/material';
+import { Container, Paper, useMediaQuery, useTheme } from '@mui/material';
 import Tracker from './Tracker';
 import { v4 as uuid } from 'uuid';
 import TrackerCreator from './TrackerCreator';
@@ -30,8 +30,12 @@ const Trackers: FC = () => {
     setTimers(timers.filter((timer) => timer.id !== id));
   };
 
+  const theme = useTheme();
+  const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
+  console.log(isMobile);
+
   return (
-    <Container sx={{ marginTop: 10, maxWidth: 'md' }}>
+    <Container sx={{ marginTop: isMobile ? 0 : 10, maxWidth: 'md' }} disableGutters={isMobile}>
       <Paper sx={{ padding: 2 }}>
         {timers.map((timer) => (
           <Tracker key={timer.id} defaultTimer={timer} onDelete={onDeleteTimer} defaultIsEditing={!timer.name} />
