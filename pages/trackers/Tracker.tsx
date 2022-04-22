@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Paper, Grid, styled, Theme, IconButton, useTheme, TextField, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
@@ -20,16 +20,23 @@ const TrackerLabel = styled(Grid)(({ theme }: { theme: Theme }) => ({
 
 interface Props {
   defaultTimer: Timer;
+  onChange: (timer: Timer) => void;
   onDelete: (id: string) => void;
   defaultIsEditing: boolean;
 }
 
 const Tracker: FC<Props> = (props) => {
-  const { defaultTimer, defaultIsEditing } = props;
+  const { defaultTimer, defaultIsEditing, onChange, onDelete } = props;
   const theme = useTheme();
   const [timer, setTimer] = useState(defaultTimer);
   const [time, setTime] = useState(Date.now());
   const [isEditing, setIsEditing] = useState(defaultIsEditing);
+
+  const nameRef = useRef<HTMLInputElement>(null);
+  const isNameValid = useMemo(() => {
+    return isEditing ? nameRef?.current?.value : !!timer.name;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nameRef?.current?.value]);
 
   useEffect(() => {
     const interval = setInterval(() => setTime(Date.now()), 1000);
@@ -37,6 +44,11 @@ const Tracker: FC<Props> = (props) => {
       clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    console.log('calling onChange');
+    onChange(timer);
+  }, [timer, onChange]);
 
   const elapsedTime = useMemo(() => {
     return timer.isActive ? Date.now() - timer.lastStarted : 0;
@@ -51,12 +63,6 @@ const Tracker: FC<Props> = (props) => {
     setTimer({ ...timer, isActive: false, seconds: timer.seconds + elapsedTime / 1000 });
   };
 
-  const isValid = (name: string) => {
-    return !!name;
-  };
-
-  const { onDelete } = props;
-
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   return (
     <Paper sx={{ margin: isMobile ? 0 : 2, marginBottom: 2, backgroundColor: theme.palette.primary.main }}>
@@ -66,7 +72,8 @@ const Tracker: FC<Props> = (props) => {
             <TextField
               onKeyPress={(ev) => {
                 if (ev.key === 'Enter') {
-                  if (isValid(timer.name)) {
+                  if (isNameValid && nameRef?.current?.value) {
+                    setTimer({ ...timer, name: nameRef.current.value });
                     setIsEditing(!isEditing);
                   }
                   ev.preventDefault();
@@ -88,9 +95,9 @@ const Tracker: FC<Props> = (props) => {
               }}
               defaultValue={timer.name}
               autoFocus
-              error={!isValid(timer.name)}
-              helperText={!isValid(timer.name) ? 'Timer name is required' : ''}
-              onChange={(event) => setTimer({ ...timer, name: event.target.value })}
+              inputRef={nameRef}
+              error={!isNameValid}
+              helperText={!isNameValid ? 'Timer name is required' : ''}
             />
           ) : (
             <TrackerLabel>{timer.name}</TrackerLabel>
@@ -99,7 +106,17 @@ const Tracker: FC<Props> = (props) => {
         </Grid>
         <Grid container item xs={12} sm={4} sx={{ justifyContent: 'flex-end' }}>
           <TrackerButton onClick={() => (timer.isActive ? stopTimer() : startTimer())}>{timer.isActive ? <PauseIcon /> : <PlayArrowIcon />}</TrackerButton>
-          <TrackerButton onClick={() => isValid(timer.name) && setIsEditing(!isEditing)}>{isEditing ? <CheckIcon /> : <EditIcon />}</TrackerButton>
+          <TrackerButton
+            disabled={!isNameValid}
+            onClick={() => {
+              if (isEditing && isNameValid && nameRef?.current?.value) {
+                setTimer({ ...timer, name: nameRef.current.value });
+              }
+              setIsEditing(!isEditing);
+            }}
+          >
+            {isEditing ? <CheckIcon /> : <EditIcon />}
+          </TrackerButton>
           <TrackerButton onClick={() => onDelete(timer.id)}>
             <DeleteIcon />
           </TrackerButton>
