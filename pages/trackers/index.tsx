@@ -1,8 +1,9 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { Container, Paper, useMediaQuery, useTheme } from '@mui/material';
 import Tracker from './Tracker';
 import { v4 as uuid } from 'uuid';
 import TrackerCreator from './TrackerCreator';
+import { useStateWithCallback } from '../../hooks/useStateWithCallback';
 
 export interface Timer {
   name: string;
@@ -13,30 +14,25 @@ export interface Timer {
 }
 
 const Trackers: FC = () => {
-  const [timers, setTimers] = useState<Timer[]>([]);
+  const [timers, setTimers] = useStateWithCallback<Timer[]>([]);
 
-  const loadTimers = () => {
-    const timers = localStorage.getItem('timers');
-    if (timers) {
-      setTimers(JSON.parse(timers));
-    }
-  };
-
-  useEffect(() => {
-    console.log('saving timers');
+  const saveTimers = (timers: Timer[]) => {
     localStorage.setItem('timers', JSON.stringify(timers));
-  }, [timers]);
+  }
 
   const changeTimer = (timer: Timer) => {
     const index = timers.findIndex((el) => el.id === timer.id);
     if (index !== -1) {
-      // setTimers([...timers.slice(0, index), timer, ...timers.slice(index + 1)]);
-      // timers[index] = timer;
+      setTimers([...timers.slice(0, index), timer, ...timers.slice(index + 1)], (timers) => saveTimers(timers));
     }
   };
 
   useEffect(() => {
-    loadTimers();
+    const timers = localStorage.getItem('timers');
+    if (timers) {
+      setTimers(JSON.parse(timers));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addTimer = () => {
@@ -47,11 +43,11 @@ const Trackers: FC = () => {
       isActive: false,
       lastStarted: Date.now()
     };
-    setTimers([...timers, newTimer]);
+    setTimers([...timers, newTimer], (timers) => saveTimers(timers));
   };
 
   const deleteTimer = (id: string) => {
-    setTimers(timers.filter((timer) => timer.id !== id));
+    setTimers(timers.filter((timer) => timer.id !== id), (timers) => saveTimers(timers));
   };
 
   const theme = useTheme();

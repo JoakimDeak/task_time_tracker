@@ -46,9 +46,9 @@ const Tracker: FC<Props> = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('calling onChange');
     onChange(timer);
-  }, [timer, onChange]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timer]);
 
   const elapsedTime = useMemo(() => {
     return timer.isActive ? Date.now() - timer.lastStarted : 0;
