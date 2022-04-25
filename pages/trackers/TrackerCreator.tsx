@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Paper, IconButton, useTheme } from '@mui/material';
+import { Paper, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 // import { TrackerButton } from './Tracker';
 
@@ -8,10 +8,11 @@ interface Props {
 }
 
 const TrackerCreator: FC<Props> = (props) => {
-  const { onCreate } = props;
   const theme = useTheme();
+  const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
+  const { onCreate } = props;
   return (
-    <Paper sx={{ margin: 2, backgroundColor: theme.palette.text.primary, display: 'flex', justifyContent: 'flex-end' }}>
+    <Paper sx={{ margin: isMobile ? 0 : 2, backgroundColor: theme.palette.text.primary, display: 'flex', justifyContent: 'flex-end' }}>
       <IconButton sx={{ padding: 2 }} onClick={onCreate}>
         <AddIcon />
       </IconButton>
