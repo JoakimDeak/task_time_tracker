@@ -1,10 +1,6 @@
 import { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Paper, Grid, styled, Theme, IconButton, useTheme, TextField, useMediaQuery } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import CheckIcon from '@mui/icons-material/Check';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import PauseIcon from '@mui/icons-material/Pause';
+import { EditIcon, CheckIcon, DeleteIcon, PlayIcon, PauseIcon } from '../../icons';
 import { getDisplayTime } from './utils';
 import { Timer } from '.';
 
@@ -47,7 +43,7 @@ const Tracker: FC<Props> = (props) => {
 
   useEffect(() => {
     onChange(timer);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timer]);
 
   const elapsedTime = useMemo(() => {
@@ -105,7 +101,7 @@ const Tracker: FC<Props> = (props) => {
           <TrackerLabel>{getDisplayTime(elapsedTime / 1000 + timer.seconds)}</TrackerLabel>
         </Grid>
         <Grid container item xs={12} sm={4} sx={{ justifyContent: 'flex-end' }}>
-          <TrackerButton onClick={() => (timer.isActive ? stopTimer() : startTimer())}>{timer.isActive ? <PauseIcon /> : <PlayArrowIcon />}</TrackerButton>
+          <TrackerButton onClick={() => (timer.isActive ? stopTimer() : startTimer())}>{timer.isActive ? <PauseIcon /> : <PlayIcon />}</TrackerButton>
           <TrackerButton
             disabled={!isNameValid}
             onClick={() => {
