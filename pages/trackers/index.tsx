@@ -18,7 +18,7 @@ const Trackers: FC = () => {
 
   const saveTimers = (timers: Timer[]) => {
     localStorage.setItem('timers', JSON.stringify(timers));
-  }
+  };
 
   const changeTimer = (timer: Timer) => {
     const index = timers.findIndex((el) => el.id === timer.id);
@@ -32,7 +32,7 @@ const Trackers: FC = () => {
     if (timers) {
       setTimers(JSON.parse(timers));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addTimer = () => {
@@ -47,7 +47,10 @@ const Trackers: FC = () => {
   };
 
   const deleteTimer = (id: string) => {
-    setTimers(timers.filter((timer) => timer.id !== id), (timers) => saveTimers(timers));
+    setTimers(
+      timers.filter((timer) => timer.id !== id),
+      (timers) => saveTimers(timers)
+    );
   };
 
   const theme = useTheme();
