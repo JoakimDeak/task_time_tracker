@@ -1,5 +1,5 @@
 import { FC, useEffect } from 'react';
-import { Container, Paper, useMediaQuery, useTheme } from '@mui/material';
+import { Container, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
 import Tracker from './Tracker';
 import { v4 as uuid } from 'uuid';
 import TrackerCreator from './TrackerCreator';
@@ -59,6 +59,9 @@ const Trackers: FC = () => {
   return (
     <Container sx={{ marginTop: isMobile ? 0 : 10, maxWidth: 'md' }} disableGutters={isMobile}>
       <Paper sx={{ padding: 2 }}>
+        <Typography variant="h6" color="text.secondary" sx={{ paddingTop: 0.5, paddingLeft: 1 }}>
+          Tasks
+        </Typography>
         {timers.map((timer) => (
           <Tracker key={timer.id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} defaultIsEditing={!timer.name} />
         ))}
