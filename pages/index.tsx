@@ -1,12 +1,8 @@
 import type { NextPage } from 'next';
-import Link from 'next/link';
+import TrackersContainer from './trackers/TrackersContainer';
 
 const Home: NextPage = () => {
-  return (
-    <Link href="/trackers">
-      <a>Trackers</a>
-    </Link>
-  );
+  return <TrackersContainer />;
 };
 
 export default Home;
