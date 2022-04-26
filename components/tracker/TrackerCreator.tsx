@@ -1,7 +1,6 @@
 import { FC } from 'react';
 import { Paper, IconButton, useTheme, useMediaQuery } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-// import { TrackerButton } from './Tracker';
 
 interface Props {
   onCreate: () => void;
