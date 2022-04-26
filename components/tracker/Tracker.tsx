@@ -134,7 +134,6 @@ const Tracker: FC<Props> = (props) => {
               }}
               variant="standard"
               defaultValue={getDisplayTime(timer.seconds)}
-              autoFocus
               inputRef={timeRef}
               error={!isTimeValid}
               helperText={!isTimeValid ? 'Invalid format' : ''}
