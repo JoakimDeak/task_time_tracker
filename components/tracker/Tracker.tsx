@@ -85,10 +85,10 @@ const Tracker: FC<Props> = (props) => {
 
   const onSubmit = useCallback(() => {
     if (nameRef?.current?.value && timeRef?.current?.value) {
-      setTimer({ ...timer, name: nameRef.current.value, seconds: getTotalTimeFromDisplayTime(timeRef.current.value) });
+      setTimer({ ...timer, name: nameRef.current.value, seconds: getTotalTimeFromDisplayTime(timeRef.current.value) - elapsedTime / 1000 });
       setIsEditing(false);
     }
-  }, [timer]);
+  }, [elapsedTime, timer]);
 
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   return (
@@ -133,7 +133,7 @@ const Tracker: FC<Props> = (props) => {
                 }
               }}
               variant="standard"
-              defaultValue={getDisplayTime(timer.seconds)}
+              defaultValue={getDisplayTime(timer.seconds + elapsedTime / 1000)}
               inputRef={timeRef}
               error={!isTimeValid}
               helperText={!isTimeValid ? 'Invalid format' : ''}
