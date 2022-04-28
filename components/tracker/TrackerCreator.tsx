@@ -11,7 +11,7 @@ const TrackerCreator: FC<Props> = (props) => {
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   const { onCreate } = props;
   return (
-    <Paper sx={{ margin: isMobile ? 0 : 2, backgroundColor: theme.palette.text.primary, display: 'flex', justifyContent: 'flex-end' }}>
+    <Paper sx={{ margin: isMobile ? 0 : 2, backgroundColor: theme.palette.text.secondary, display: 'flex', justifyContent: 'flex-end' }}>
       <IconButton sx={{ padding: 2 }} onClick={onCreate}>
         <AddIcon />
       </IconButton>

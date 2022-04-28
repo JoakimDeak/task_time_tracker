@@ -6,22 +6,22 @@ import { Timer } from './TrackerList';
 
 export const TrackerButton = styled(IconButton)(({ theme }: { theme: Theme }) => ({
   padding: theme.spacing(2),
-  color: theme.palette.text.primary
+  color: theme.palette.text.secondary
 }));
 
 const TrackerLabel = styled(Grid)(({ theme }: { theme: Theme }) => ({
   padding: theme.spacing(2),
-  color: theme.palette.text.primary
+  color: theme.palette.text.secondary
 }));
 
 const EditableLabel = styled(TextField)(({ theme }: { theme: Theme }) => ({
   paddingLeft: theme.spacing(2),
   '& .MuiInput-underline:before': {
-    borderBottomColor: theme.palette.text.primary
+    borderBottomColor: theme.palette.text.secondary
   },
   '& .MuiInput-underline:after': {
     borderBottom: '1px solid',
-    borderBottomColor: theme.palette.text.primary
+    borderBottomColor: theme.palette.text.secondary
   },
   '& .MuiInputBase-input': {
     padding: 0
