@@ -42,7 +42,7 @@ const Header: FC<Props> = (props) => {
           {session.status === SessionStatus.AUTHENTICATED ? (
             <ProfileMenu />
           ) : (
-            <Button color="info" variant="outlined" sx={{ color: theme.palette.text.secondary }} onClick={() => signIn()}>
+            <Button color="info" variant="outlined" sx={{ color: theme.palette.text.primary }} onClick={() => signIn()}>
               Sign In
             </Button>
           )}
