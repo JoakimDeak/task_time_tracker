@@ -59,7 +59,7 @@ const Trackers: FC = () => {
   return (
     <Container sx={{ marginTop: isMobile ? 0 : 5, maxWidth: 'md' }} disableGutters={isMobile}>
       <Paper sx={{ padding: 2 }}>
-        <Typography variant="h6" sx={{ padding: theme.spacing(0.5, 1) }}>
+        <Typography variant="h6" color="text.secondary" sx={{ padding: theme.spacing(0.5, 1) }}>
           Tasks
         </Typography>
         {timers.map((timer) => (

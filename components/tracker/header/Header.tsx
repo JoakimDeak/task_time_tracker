@@ -34,7 +34,7 @@ const Header: FC<Props> = (props) => {
         }}
       >
         <Grid container item xs="auto">
-          <Typography color="text.secondary" sx={{ fontWeight: 600 }}>
+          <Typography color="text.primary" sx={{ fontWeight: 600 }}>
             Task Time Tracker
           </Typography>
         </Grid>
