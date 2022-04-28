@@ -10,8 +10,7 @@ export const TrackerButton = styled(IconButton)(({ theme }: { theme: Theme }) =>
 }));
 
 const TrackerLabel = styled(Grid)(({ theme }: { theme: Theme }) => ({
-  padding: theme.spacing(2),
-  color: theme.palette.text.primary
+  padding: theme.spacing(2)
 }));
 
 const EditableLabel = styled(TextField)(({ theme }: { theme: Theme }) => ({
