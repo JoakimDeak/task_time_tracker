@@ -9,7 +9,8 @@ export default NextAuth({
     })
   ],
   theme: {
-    colorScheme: 'light'
+    colorScheme: 'light',
+    logo: 'https://i.imgur.com/E3IqcQu.png'
   },
   callbacks: {
     async session({ session, token }) {
