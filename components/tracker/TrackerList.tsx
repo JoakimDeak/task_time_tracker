@@ -57,7 +57,7 @@ const Trackers: FC = () => {
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
 
   return (
-    <Container sx={{ marginTop: isMobile ? 0 : 10, maxWidth: 'md' }} disableGutters={isMobile}>
+    <Container sx={{ marginTop: isMobile ? 0 : 5, maxWidth: 'md' }} disableGutters={isMobile}>
       <Paper sx={{ padding: 2 }}>
         <Typography variant="h6" sx={{ padding: theme.spacing(0.5, 1) }}>
           Tasks
