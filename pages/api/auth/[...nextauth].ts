@@ -17,5 +17,6 @@ export default NextAuth({
       session.userId = token.sub;
       return session;
     }
-  }
+  },
+  secret: process.env.SECRET
 });
