@@ -6,3 +6,4 @@
 ## Minor todos
 - Drag and drop reorder tasks
 - Add total time to tasks header
+- Make adding and subtracting time easier
