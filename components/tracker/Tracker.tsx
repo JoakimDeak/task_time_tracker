@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Paper, Grid, styled, Theme, IconButton, useTheme, TextField, useMediaQuery } from '@mui/material';
-import { EditIcon, CheckIcon, DeleteIcon, PlayIcon, PauseIcon } from '../../icons';
+import { EditIcon, CheckIcon, DeleteIcon, PlayIcon, PauseIcon } from 'icons';
 import { getDisplayTime, getTotalTimeFromDisplayTime, isTimeFormatCorrect } from './utils';
 import { Timer } from './TrackerList';
 

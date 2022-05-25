@@ -3,7 +3,7 @@ import { Container, Paper, Typography, useMediaQuery, useTheme } from '@mui/mate
 import Tracker from './Tracker';
 import { v4 as uuid } from 'uuid';
 import TrackerCreator from './TrackerCreator';
-import { useStateWithCallback } from '../../hooks/useStateWithCallback';
+import { useStateWithCallback } from 'hooks/useStateWithCallback';
 import { useSession } from 'next-auth/react';
 import { SessionStatus } from 'types/session';
 

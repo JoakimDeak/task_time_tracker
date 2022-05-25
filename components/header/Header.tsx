@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { Button, Grid, Typography, useTheme } from '@mui/material';
 import { useSession, signIn } from 'next-auth/react';
-import { SessionStatus } from '../../types/session';
+import { SessionStatus } from 'types/session';
 import ProfileMenu from './ProfileMenu';
 
 const Header: FC = () => {
