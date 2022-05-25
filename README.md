@@ -1,6 +1,6 @@
 # Todo
 - <del>Add login</del>
-- Replace local storage with a database
+- <del>Replace local storage with a database</del>
 - Use jira api to log time
 
 ## Minor todos
