@@ -64,6 +64,7 @@ const Tracker: FC<Props> = (props) => {
     };
   }, []);
 
+  // replace with setStateCallback
   useEffect(() => {
     onChange(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -155,7 +156,7 @@ const Tracker: FC<Props> = (props) => {
           >
             {isEditing ? <CheckIcon /> : <EditIcon />}
           </TrackerButton>
-          <TrackerButton onClick={() => onDelete(timer.id)}>
+          <TrackerButton onClick={() => onDelete(timer._id)}>
             <DeleteIcon />
           </TrackerButton>
         </Grid>

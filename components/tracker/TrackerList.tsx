@@ -4,42 +4,61 @@ import Tracker from './Tracker';
 import { v4 as uuid } from 'uuid';
 import TrackerCreator from './TrackerCreator';
 import { useStateWithCallback } from '../../hooks/useStateWithCallback';
+import { useSession } from 'next-auth/react';
+import { SessionStatus } from 'types/session';
 
 export interface Timer {
   name: string;
   seconds: number;
-  id: string;
+  _id: string;
   isActive: boolean;
   lastStarted: number;
 }
 
 const Trackers: FC = () => {
   const [timers, setTimers] = useStateWithCallback<Timer[]>([]);
+  const { status } = useSession();
 
   const saveTimers = (timers: Timer[]) => {
-    localStorage.setItem('timers', JSON.stringify(timers));
+    if (status === SessionStatus.AUTHENTICATED) {
+      fetch('api/timers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(timers) });
+    } else if (status === SessionStatus.UNAUTHENTICATED) {
+      localStorage.setItem('timers', JSON.stringify(timers));
+    }
   };
 
   const changeTimer = (timer: Timer) => {
-    const index = timers.findIndex((el) => el.id === timer.id);
+    const index = timers.findIndex((el) => el._id === timer._id);
     if (index !== -1) {
       setTimers([...timers.slice(0, index), timer, ...timers.slice(index + 1)], (timers) => saveTimers(timers));
     }
   };
 
-  useEffect(() => {
-    const timers = localStorage.getItem('timers');
-    if (timers) {
-      setTimers(JSON.parse(timers));
-    }
+  useEffect(
+    function loadTimers() {
+      if (status === SessionStatus.AUTHENTICATED) {
+        fetch('api/timers')
+          .then((res) => res.json())
+          .then((data) => {
+            setTimers(data);
+          })
+          .catch((error) => console.log(error));
+      } else if (status === SessionStatus.UNAUTHENTICATED) {
+        const timers = localStorage.getItem('timers');
+        if (timers) {
+          setTimers(JSON.parse(timers));
+        }
+      }
+    },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    [status]
+  );
 
   const addTimer = () => {
     const newTimer = {
       name: '',
       seconds: 0,
-      id: uuid(),
+      _id: uuid(),
       isActive: false,
       lastStarted: Date.now()
     };
@@ -48,7 +67,7 @@ const Trackers: FC = () => {
 
   const deleteTimer = (id: string) => {
     setTimers(
-      timers.filter((timer) => timer.id !== id),
+      timers.filter((timer) => timer._id !== id),
       (timers) => saveTimers(timers)
     );
   };
@@ -63,7 +82,7 @@ const Trackers: FC = () => {
           Tasks
         </Typography>
         {timers.map((timer) => (
-          <Tracker key={timer.id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} defaultIsEditing={!timer.name} />
+          <Tracker key={timer._id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} defaultIsEditing={!timer.name} />
         ))}
         <TrackerCreator onCreate={addTimer} />
       </Paper>
