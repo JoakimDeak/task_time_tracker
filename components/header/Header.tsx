@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { Button, Grid, Typography, useTheme } from '@mui/material';
 import { useSession, signIn } from 'next-auth/react';
-import { SessionStatus } from '../../../types/session';
+import { SessionStatus } from '../../types/session';
 import ProfileMenu from './ProfileMenu';
 
 interface Props {}
@@ -34,9 +34,7 @@ const Header: FC<Props> = (props) => {
         }}
       >
         <Grid container item xs="auto">
-          <Typography color="text.primary" sx={{ fontWeight: 600 }}>
-            Task Time Tracker
-          </Typography>
+          <Typography sx={{ fontWeight: 600, color: '#eee' }}>Task Time Tracker</Typography>
         </Grid>
         <Grid item xs="auto">
           {session.status === SessionStatus.AUTHENTICATED ? (
