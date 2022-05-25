@@ -4,9 +4,7 @@ import { useSession, signIn } from 'next-auth/react';
 import { SessionStatus } from '../../types/session';
 import ProfileMenu from './ProfileMenu';
 
-interface Props {}
-
-const Header: FC<Props> = (props) => {
+const Header: FC = () => {
   const session = useSession();
   const theme = useTheme();
   const [height, setHeight] = useState(0);
