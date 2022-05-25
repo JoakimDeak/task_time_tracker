@@ -1,5 +1,5 @@
-import { FC, useEffect } from 'react';
-import { Container, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { FC, useEffect, useState } from 'react';
+import { Container, LinearProgress, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
 import Timer from './Timer';
 import { v4 as uuid } from 'uuid';
 import TimerCreator from './TimerCreator';
@@ -18,6 +18,7 @@ export interface Timer {
 const TimerList: FC = () => {
   const [timers, setTimers] = useStateWithCallback<Timer[]>([]);
   const { status } = useSession();
+  const [isLoading, setIsLoading] = useState(true);
 
   const saveTimers = (timers: Timer[]) => {
     if (status === SessionStatus.AUTHENTICATED) {
@@ -36,17 +37,20 @@ const TimerList: FC = () => {
 
   useEffect(
     function loadTimers() {
+      setIsLoading(true);
       if (status === SessionStatus.AUTHENTICATED) {
         fetch('api/timers')
           .then((res) => res.json())
           .then((data) => {
             setTimers(data);
+            setIsLoading(false);
           })
           .catch((error) => console.log(error));
       } else if (status === SessionStatus.UNAUTHENTICATED) {
         const timers = localStorage.getItem('timers');
         if (timers) {
           setTimers(JSON.parse(timers));
+          setIsLoading(false);
         }
       }
     },
@@ -81,6 +85,7 @@ const TimerList: FC = () => {
         <Typography variant="h6" color="text.secondary" sx={{ padding: theme.spacing(0.5, 1) }}>
           Tasks
         </Typography>
+        {isLoading && <LinearProgress sx={{ margin: theme.spacing(1, 2) }} />}
         {timers.map((timer) => (
           <Timer key={timer._id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} defaultIsEditing={!timer.name} />
         ))}
