@@ -6,7 +6,7 @@ interface Props {
   onCreate: () => void;
 }
 
-const TrackerCreator: FC<Props> = (props) => {
+const TimerCreator: FC<Props> = (props) => {
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   const { onCreate } = props;
@@ -19,4 +19,4 @@ const TrackerCreator: FC<Props> = (props) => {
   );
 };
 
-export default TrackerCreator;
+export default TimerCreator;

@@ -2,14 +2,14 @@ import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Paper, Grid, styled, Theme, IconButton, useTheme, TextField, useMediaQuery } from '@mui/material';
 import { EditIcon, CheckIcon, DeleteIcon, PlayIcon, PauseIcon } from 'icons';
 import { getDisplayTime, getTotalTimeFromDisplayTime, isTimeFormatCorrect } from './utils';
-import { Timer } from './TrackerList';
+import { Timer } from './TimerList';
 
-export const TrackerButton = styled(IconButton)(({ theme }: { theme: Theme }) => ({
+export const TimerButton = styled(IconButton)(({ theme }: { theme: Theme }) => ({
   padding: theme.spacing(2),
   color: theme.palette.text.primary
 }));
 
-const TrackerLabel = styled(Grid)(({ theme }: { theme: Theme }) => ({
+const TimerLabel = styled(Grid)(({ theme }: { theme: Theme }) => ({
   padding: theme.spacing(2)
 }));
 
@@ -34,7 +34,7 @@ interface Props {
   defaultIsEditing: boolean;
 }
 
-const Tracker: FC<Props> = (props) => {
+const Timer: FC<Props> = (props) => {
   const { defaultTimer, defaultIsEditing, onChange, onDelete } = props;
   const theme = useTheme();
   const [timer, setTimer] = useState(defaultTimer);
@@ -113,7 +113,7 @@ const Tracker: FC<Props> = (props) => {
               helperText={!isNameValid ? 'Timer name is required' : ''}
             />
           ) : (
-            <TrackerLabel>{timer.name}</TrackerLabel>
+            <TimerLabel>{timer.name}</TimerLabel>
           )}
           {isEditing ? (
             <EditableLabel
@@ -139,12 +139,12 @@ const Tracker: FC<Props> = (props) => {
               helperText={!isTimeValid ? 'Invalid format' : ''}
             />
           ) : (
-            <TrackerLabel>{getDisplayTime(elapsedTime / 1000 + timer.seconds)}</TrackerLabel>
+            <TimerLabel>{getDisplayTime(elapsedTime / 1000 + timer.seconds)}</TimerLabel>
           )}
         </Grid>
         <Grid container item xs={12} sm={4} sx={{ justifyContent: 'flex-end' }}>
-          <TrackerButton onClick={() => (timer.isActive ? stopTimer() : startTimer())}>{timer.isActive ? <PauseIcon /> : <PlayIcon />}</TrackerButton>
-          <TrackerButton
+          <TimerButton onClick={() => (timer.isActive ? stopTimer() : startTimer())}>{timer.isActive ? <PauseIcon /> : <PlayIcon />}</TimerButton>
+          <TimerButton
             disabled={!(isNameValid && isTimeValid)}
             onClick={() => {
               if (isEditing) {
@@ -155,14 +155,14 @@ const Tracker: FC<Props> = (props) => {
             }}
           >
             {isEditing ? <CheckIcon /> : <EditIcon />}
-          </TrackerButton>
-          <TrackerButton onClick={() => onDelete(timer._id)}>
+          </TimerButton>
+          <TimerButton onClick={() => onDelete(timer._id)}>
             <DeleteIcon />
-          </TrackerButton>
+          </TimerButton>
         </Grid>
       </Grid>
     </Paper>
   );
 };
 
-export default Tracker;
+export default Timer;

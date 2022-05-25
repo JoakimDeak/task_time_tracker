@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import connectToDb from 'dbConnect';
 import { getSession } from 'next-auth/react';
-import { Timer } from 'components/tracker/TrackerList';
+import { Timer } from 'components/timer/TimerList';
 
 interface UserData {
   _id: string;
@@ -31,9 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json(currentTimers);
   } else if (req.method === 'POST') {
     const updatedTimers: Timer[] = req.body;
-    const deletedTimers = currentTimers.filter(
-      (currentTracker) => !updatedTimers.find((updatedTracker) => updatedTracker._id === currentTracker._id?.toString())
-    );
+    const deletedTimers = currentTimers.filter((currentTimer) => !updatedTimers.find((updatedTimer) => updatedTimer._id === currentTimer._id?.toString()));
 
     db.collection('user').updateOne({ _id: session?.userId }, { $set: { timers: updatedTimers.map((timer) => timer._id) } });
 

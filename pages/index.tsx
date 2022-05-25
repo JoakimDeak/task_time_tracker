@@ -1,8 +1,8 @@
 import type { NextPage } from 'next';
-import TrackersContainer from 'components/tracker/TrackerList';
+import TimerList from 'components/timer/TimerList';
 
 const Home: NextPage = () => {
-  return <TrackersContainer />;
+  return <TimerList />;
 };
 
 export default Home;

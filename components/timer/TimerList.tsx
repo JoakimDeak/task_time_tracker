@@ -1,8 +1,8 @@
 import { FC, useEffect } from 'react';
 import { Container, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
-import Tracker from './Tracker';
+import Timer from './Timer';
 import { v4 as uuid } from 'uuid';
-import TrackerCreator from './TrackerCreator';
+import TimerCreator from './TimerCreator';
 import { useStateWithCallback } from 'hooks/useStateWithCallback';
 import { useSession } from 'next-auth/react';
 import { SessionStatus } from 'types/session';
@@ -15,7 +15,7 @@ export interface Timer {
   lastStarted: number;
 }
 
-const Trackers: FC = () => {
+const TimerList: FC = () => {
   const [timers, setTimers] = useStateWithCallback<Timer[]>([]);
   const { status } = useSession();
 
@@ -82,12 +82,12 @@ const Trackers: FC = () => {
           Tasks
         </Typography>
         {timers.map((timer) => (
-          <Tracker key={timer._id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} defaultIsEditing={!timer.name} />
+          <Timer key={timer._id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} defaultIsEditing={!timer.name} />
         ))}
-        <TrackerCreator onCreate={addTimer} />
+        <TimerCreator onCreate={addTimer} />
       </Paper>
     </Container>
   );
 };
 
-export default Trackers;
+export default TimerList;
