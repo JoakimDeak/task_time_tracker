@@ -10,36 +10,35 @@ interface UserData {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getSession({ req });
+
+  if (!session?.userId) {
+    res.status(500).json({ message: 'Missing userId' });
+    return;
+  }
+
+  const { db } = await connectToDb();
+  const user = await db.collection('user').findOne({ _id: session.userId });
+  if (!user) {
+    await db.collection<UserData>('user').insertOne({ _id: session.userId, timers: [] });
+  }
+
+  const currentTimers = await db
+    .collection('timer')
+    .find({ _id: { $in: user?.timers ?? [] } })
+    .toArray();
+
   if (req.method === 'GET') {
-    const { db } = await connectToDb();
-    const user = await db.collection('user').findOne({ _id: session?.userId });
-    if (!user) {
-      await db.collection<UserData>('user').insertOne({ _id: session?.userId as string, timers: [] });
-    }
-    const userTrackers = user?.trackers ?? [];
-    const data = await db
-      .collection('tracker')
-      .find({ _id: { $in: userTrackers } })
-      .toArray();
-    res.status(200).json(data);
+    res.status(200).json(currentTimers);
   } else if (req.method === 'POST') {
-    const { db } = await connectToDb();
-
-    const user = await db.collection('user').findOne({ _id: session?.userId });
-
-    const updatedTrackers: Timer[] = req.body;
-    const currentTrackers = await db
-      .collection('tracker')
-      .find({ _id: { $in: user?.trackers ?? [] } })
-      .toArray();
-    const deletedTrackers = currentTrackers.filter(
-      (currentTracker) => !updatedTrackers.find((updatedTracker) => updatedTracker._id === currentTracker._id?.toString())
+    const updatedTimers: Timer[] = req.body;
+    const deletedTimers = currentTimers.filter(
+      (currentTracker) => !updatedTimers.find((updatedTracker) => updatedTracker._id === currentTracker._id?.toString())
     );
 
-    db.collection('user').updateOne({ _id: session?.userId }, { $set: { trackers: updatedTrackers.map((tracker) => tracker._id) } });
+    db.collection('user').updateOne({ _id: session?.userId }, { $set: { timers: updatedTimers.map((timer) => timer._id) } });
 
-    updatedTrackers.forEach((tracker) => db.collection('tracker').replaceOne({ _id: tracker._id }, tracker, { upsert: true }));
-    db.collection('tracker').deleteMany({ _id: { $in: deletedTrackers.map((tracker) => tracker.id) } });
+    updatedTimers.forEach((timer) => db.collection('timer').replaceOne({ _id: timer._id }, timer, { upsert: true }));
+    db.collection('timer').deleteMany({ _id: { $in: deletedTimers.map((timer) => timer.id) } });
 
     res.status(200).json({ message: 'Success' });
   }
