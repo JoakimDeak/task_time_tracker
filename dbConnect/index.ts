@@ -7,11 +7,11 @@ let cachedClient: MongoClient | null = null;
 let cachedDb: Db | null = null;
 
 if (!uri) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  throw new Error('No MONGODB_URI set');
 }
 
 if (!dbName) {
-  throw new Error('Please define the MONGODB_DB environment variable inside .env.local');
+  throw new Error('No MONGODB_DB set');
 }
 
 export default async function connectToDatabase() {
