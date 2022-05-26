@@ -1,8 +1,10 @@
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FC, useCallback, useMemo, useState } from 'react';
 import { Paper, Grid, styled, Theme, IconButton, useTheme, TextField, useMediaQuery } from '@mui/material';
 import { EditIcon, CheckIcon, DeleteIcon, PlayIcon, PauseIcon } from 'icons';
 import { getDisplayTime, getTotalTimeFromDisplayTime, isTimeFormatCorrect } from './utils';
 import { Timer } from './TimerList';
+import TimerDurationLabel from './TimerDurationLabel';
+import { useStateWithCallback } from 'hooks/useStateWithCallback';
 
 export const TimerButton = styled(IconButton)(({ theme }: { theme: Theme }) => ({
   padding: theme.spacing(2),
@@ -37,58 +39,38 @@ interface Props {
 const Timer: FC<Props> = (props) => {
   const { defaultTimer, defaultIsEditing, onChange, onDelete } = props;
   const theme = useTheme();
-  const [timer, setTimer] = useState(defaultTimer);
-  const [time, setTime] = useState(Date.now());
-  const [isEditing, setIsEditing] = useState(defaultIsEditing);
+  const [timer, setTimer] = useStateWithCallback(defaultTimer);
+  const [isEditing, setIsEditing] = useStateWithCallback(defaultIsEditing);
 
-  const nameRef = useRef<HTMLInputElement>(null);
+  const getElapsedTime = useCallback(() => (timer.isActive ? (Date.now() - timer.lastStarted) / 1000 : 0), [timer.isActive, timer.lastStarted]);
+
+  const [nameInputString, setNameInputString] = useState(timer.name);
   const isNameValid = useMemo(() => {
-    return isEditing ? nameRef?.current?.value : !!timer.name;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nameRef?.current?.value]);
+    return isEditing ? nameInputString : timer.name;
+  }, [nameInputString, isEditing, timer.name]);
 
-  const timeRef = useRef<HTMLInputElement>(null);
-
+  const [timeInputString, setTimeInputString] = useState(getDisplayTime(timer.seconds + getElapsedTime()));
   const isTimeValid = useMemo(() => {
     if (!isEditing) {
       return true;
     }
-    return timeRef?.current?.value ? isTimeFormatCorrect(timeRef.current.value) : false;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timeRef?.current?.value]);
-
-  useEffect(() => {
-    const interval = setInterval(() => setTime(Date.now()), 1000);
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  // replace with setStateCallback
-  useEffect(() => {
-    onChange(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timer]);
-
-  const elapsedTime = useMemo(() => {
-    return timer.isActive ? Date.now() - timer.lastStarted : 0;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timer.isActive, timer.lastStarted, time]);
+    return timeInputString ? isTimeFormatCorrect(timeInputString) : false;
+  }, [isEditing, timeInputString]);
 
   const startTimer = useCallback(() => {
-    setTimer({ ...timer, isActive: true, lastStarted: Date.now() });
-  }, [timer]);
+    setTimer({ ...timer, isActive: true, lastStarted: Date.now() }, (timer) => onChange(timer));
+  }, [onChange, setTimer, timer]);
 
   const stopTimer = useCallback(() => {
-    setTimer({ ...timer, isActive: false, seconds: timer.seconds + elapsedTime / 1000 });
-  }, [elapsedTime, timer]);
+    setTimer({ ...timer, isActive: false, seconds: timer.seconds + getElapsedTime() }, (timer) => onChange(timer));
+  }, [getElapsedTime, onChange, setTimer, timer]);
 
   const onSubmit = useCallback(() => {
-    if (nameRef?.current?.value && timeRef?.current?.value) {
-      setTimer({ ...timer, name: nameRef.current.value, seconds: getTotalTimeFromDisplayTime(timeRef.current.value) - elapsedTime / 1000 });
+    if (nameInputString && timeInputString) {
+      setTimer({ ...timer, name: nameInputString, seconds: getTotalTimeFromDisplayTime(timeInputString) - getElapsedTime() }, (timer) => onChange(timer));
       setIsEditing(false);
     }
-  }, [elapsedTime, timer]);
+  }, [getElapsedTime, nameInputString, onChange, setIsEditing, setTimer, timeInputString, timer]);
 
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   return (
@@ -108,7 +90,7 @@ const Timer: FC<Props> = (props) => {
               variant="standard"
               defaultValue={timer.name}
               autoFocus
-              inputRef={nameRef}
+              onChange={(e) => setNameInputString(e.target.value)}
               error={!isNameValid}
               helperText={!isNameValid ? 'Timer name is required' : ''}
             />
@@ -133,13 +115,13 @@ const Timer: FC<Props> = (props) => {
                 }
               }}
               variant="standard"
-              defaultValue={getDisplayTime(timer.seconds + elapsedTime / 1000)}
-              inputRef={timeRef}
+              defaultValue={getDisplayTime(timer.seconds + getElapsedTime())}
               error={!isTimeValid}
+              onChange={(e) => setTimeInputString(e.target.value)}
               helperText={!isTimeValid ? 'Invalid format' : ''}
             />
           ) : (
-            <TimerLabel>{getDisplayTime(elapsedTime / 1000 + timer.seconds)}</TimerLabel>
+            <TimerDurationLabel timer={timer} />
           )}
         </Grid>
         <Grid container item xs={12} sm={4} sx={{ justifyContent: 'flex-end' }}>
@@ -150,7 +132,7 @@ const Timer: FC<Props> = (props) => {
               if (isEditing) {
                 onSubmit();
               } else {
-                setIsEditing(true);
+                setIsEditing(true, () => setTimeInputString(getDisplayTime(timer.seconds + getElapsedTime())));
               }
             }}
           >
