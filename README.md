@@ -8,4 +8,4 @@
 - Add total time to tasks header
 - Make adding and subtracting time easier
 - Add customizable motivational notifications
-- Add loading icon when waiting for database
+- <del>Add loading icon when waiting for database</del>
