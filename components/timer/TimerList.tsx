@@ -6,6 +6,7 @@ import TimerCreator from './TimerCreator';
 import { useStateWithCallback } from 'hooks/useStateWithCallback';
 import { useSession } from 'next-auth/react';
 import { SessionStatus } from 'types/session';
+import TimerListHeader from './TimerListHeader';
 
 export interface Timer {
   name: string;
@@ -82,9 +83,7 @@ const TimerList: FC = () => {
   return (
     <Container sx={{ marginTop: isMobile ? 0 : 5, maxWidth: 'md' }} disableGutters={isMobile}>
       <Paper sx={{ padding: 2 }}>
-        <Typography variant="h6" color="text.secondary" sx={{ padding: theme.spacing(0.5, 1) }}>
-          Tasks
-        </Typography>
+        <TimerListHeader timers={timers} />
         {isLoading && <LinearProgress sx={{ margin: theme.spacing(1, 2) }} />}
         {timers.map((timer) => (
           <Timer key={timer._id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} defaultIsEditing={!timer.name} />
