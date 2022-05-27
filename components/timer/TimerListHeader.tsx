@@ -7,8 +7,8 @@ interface Props {
   timers: Timer[];
 }
 
-const TimerListHeader: FC<Props> = (Props) => {
-  const { timers } = Props;
+const TimerListHeader: FC<Props> = (props) => {
+  const { timers } = props;
   const theme = useTheme();
 
   const [clock, setClock] = useState(0);
