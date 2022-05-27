@@ -20,7 +20,10 @@ const TimerListHeader: FC<Props> = (Props) => {
   }, []);
 
   const totalTrackedTime = useMemo(
-    () => Math.floor(timers.reduce((prev, curr) => prev + curr.seconds + (curr.isActive ? (Date.now() - curr.lastStarted) / 1000 : 0), 0)),
+    () =>
+      Math.floor(
+        timers.reduce((totalTime, timer) => totalTime + timer.seconds + (timer.isActive && !timer.isEditing ? (Date.now() - timer.lastStarted) / 1000 : 0), 0)
+      ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [timers, clock]
   );

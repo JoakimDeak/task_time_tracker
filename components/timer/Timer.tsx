@@ -33,51 +33,51 @@ interface Props {
   defaultTimer: Timer;
   onChange: (timer: Timer) => void;
   onDelete: (id: string) => void;
-  defaultIsEditing: boolean;
 }
 
 const Timer: FC<Props> = (props) => {
-  const { defaultTimer, defaultIsEditing, onChange, onDelete } = props;
+  const { defaultTimer, onChange, onDelete } = props;
   const theme = useTheme();
   const [timer, setTimer] = useStateWithCallback(defaultTimer);
-  const [isEditing, setIsEditing] = useStateWithCallback(defaultIsEditing);
 
   const getElapsedTime = useCallback(() => (timer.isActive ? (Date.now() - timer.lastStarted) / 1000 : 0), [timer.isActive, timer.lastStarted]);
 
   const [nameInputString, setNameInputString] = useState(timer.name);
   const isNameValid = useMemo(() => {
-    return isEditing ? nameInputString : timer.name;
-  }, [nameInputString, isEditing, timer.name]);
+    return timer.isEditing ? nameInputString : timer.name;
+  }, [timer.isEditing, timer.name, nameInputString]);
 
   const [timeInputString, setTimeInputString] = useState(getDisplayTime(timer.seconds + getElapsedTime()));
   const isTimeValid = useMemo(() => {
-    if (!isEditing) {
+    if (!timer.isEditing) {
       return true;
     }
     return timeInputString ? isTimeFormatCorrect(timeInputString) : false;
-  }, [isEditing, timeInputString]);
+  }, [timeInputString, timer.isEditing]);
 
   const startTimer = useCallback(() => {
     setTimer({ ...timer, isActive: true, lastStarted: Date.now() }, (timer) => onChange(timer));
   }, [onChange, setTimer, timer]);
 
-  const stopTimer = useCallback(() => {
-    setTimer({ ...timer, isActive: false, seconds: timer.seconds + getElapsedTime() }, (timer) => onChange(timer));
-  }, [getElapsedTime, onChange, setTimer, timer]);
+  const stopTimer = useCallback(
+    () => setTimer({ ...timer, isActive: false, seconds: timer.seconds + getElapsedTime() }, (timer) => onChange(timer)),
+    [getElapsedTime, onChange, setTimer, timer]
+  );
 
   const onSubmit = useCallback(() => {
     if (nameInputString && timeInputString) {
-      setTimer({ ...timer, name: nameInputString, seconds: getTotalTimeFromDisplayTime(timeInputString) - getElapsedTime() }, (timer) => onChange(timer));
-      setIsEditing(false);
+      setTimer({ ...timer, name: nameInputString, seconds: getTotalTimeFromDisplayTime(timeInputString), isEditing: false, lastStarted: Date.now() }, (timer) =>
+        onChange(timer)
+      );
     }
-  }, [getElapsedTime, nameInputString, onChange, setIsEditing, setTimer, timeInputString, timer]);
+  }, [nameInputString, onChange, setTimer, timeInputString, timer]);
 
   const isMobile = !useMediaQuery(theme.breakpoints.up('sm'));
   return (
     <Paper sx={{ margin: isMobile ? 0 : 2, marginBottom: 2, backgroundColor: theme.palette.primary.main }}>
       <Grid container>
         <Grid container item xs={12} sm={8} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          {isEditing ? (
+          {timer.isEditing ? (
             <EditableLabel
               onKeyPress={(ev) => {
                 if (ev.key === 'Enter') {
@@ -97,7 +97,7 @@ const Timer: FC<Props> = (props) => {
           ) : (
             <TimerLabel>{timer.name}</TimerLabel>
           )}
-          {isEditing ? (
+          {timer.isEditing ? (
             <EditableLabel
               onKeyPress={(ev) => {
                 if (ev.key === 'Enter') {
@@ -115,7 +115,7 @@ const Timer: FC<Props> = (props) => {
                 }
               }}
               variant="standard"
-              defaultValue={getDisplayTime(timer.seconds + getElapsedTime())}
+              defaultValue={getDisplayTime(timer.seconds)}
               error={!isTimeValid}
               onChange={(e) => setTimeInputString(e.target.value)}
               helperText={!isTimeValid ? 'Invalid format' : ''}
@@ -129,14 +129,17 @@ const Timer: FC<Props> = (props) => {
           <TimerButton
             disabled={!(isNameValid && isTimeValid)}
             onClick={() => {
-              if (isEditing) {
+              if (timer.isEditing) {
                 onSubmit();
               } else {
-                setIsEditing(true, () => setTimeInputString(getDisplayTime(timer.seconds + getElapsedTime())));
+                setTimer({ ...timer, isEditing: true, seconds: getTotalTimeFromDisplayTime(timeInputString) + getElapsedTime() }, (timer) => {
+                  setTimeInputString(getDisplayTime(timer.seconds));
+                  onChange(timer);
+                });
               }
             }}
           >
-            {isEditing ? <CheckIcon /> : <EditIcon />}
+            {timer.isEditing ? <CheckIcon /> : <EditIcon />}
           </TimerButton>
           <TimerButton onClick={() => onDelete(timer._id)}>
             <DeleteIcon />

@@ -14,6 +14,7 @@ export interface Timer {
   _id: string;
   isActive: boolean;
   lastStarted: number;
+  isEditing: boolean;
 }
 
 const TimerList: FC = () => {
@@ -65,7 +66,8 @@ const TimerList: FC = () => {
       seconds: 0,
       _id: uuid(),
       isActive: false,
-      lastStarted: Date.now()
+      lastStarted: Date.now(),
+      isEditing: true
     };
     setTimers([...timers, newTimer], (timers) => saveTimers(timers));
   };
@@ -86,7 +88,7 @@ const TimerList: FC = () => {
         <TimerListHeader timers={timers} />
         {isLoading && <LinearProgress sx={{ margin: theme.spacing(1, 2) }} />}
         {timers.map((timer) => (
-          <Timer key={timer._id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} defaultIsEditing={!timer.name} />
+          <Timer key={timer._id} defaultTimer={timer} onChange={changeTimer} onDelete={deleteTimer} />
         ))}
         <TimerCreator onCreate={addTimer} />
       </Paper>
