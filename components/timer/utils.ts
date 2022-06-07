@@ -18,7 +18,20 @@ export const getDisplayTime = (secondsTotal: number) => {
   if (secondsTotal > 0) {
     seconds = secondsTotal % 60;
   }
-  return `${days ? `${days}d` : ''} ${hours ? `${hours}h` : ''} ${minutes ? `${minutes}m` : ''} ${seconds ? `${seconds | 0}s` : '0s'}`?.replaceAll('  ', ' ');
+
+  let displayTime = '';
+  if (days) {
+    displayTime += `${days}d `;
+  }
+  if (hours) {
+    displayTime += `${hours}h `;
+  }
+  if (minutes) {
+    displayTime += `${minutes}m `;
+  }
+  displayTime += `${seconds | 0}s`;
+
+  return displayTime;
 };
 
 export const getTotalTimeFromDisplayTime = (displayTime: string) => {
