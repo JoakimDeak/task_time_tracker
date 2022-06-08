@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Avatar, Menu, MenuItem, ListItemIcon, IconButton, Button, useTheme } from '@mui/material';
 import { KebabMenuIcon, LogoutIcon, PrivacyIcon } from 'icons';
 import { signIn, signOut, useSession } from 'next-auth/react';
