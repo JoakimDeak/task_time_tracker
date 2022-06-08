@@ -25,7 +25,7 @@ const ProfileMenu = () => {
     <>
       <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
         {isLoggedIn ? (
-          <Avatar sx={{ width: 32, height: 32 }} src={session.data?.user?.image ? session.data.user.image : undefined}></Avatar>
+          <Avatar sx={{ width: 32, height: 32 }} src={session.data.user?.image ?? undefined}></Avatar>
         ) : (
           <KebabMenuIcon sx={{ color: 'text.primary' }} />
         )}
