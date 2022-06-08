@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Avatar, Menu, MenuItem, ListItemIcon, IconButton, Button, useTheme } from '@mui/material';
 import { KebabMenuIcon, LogoutIcon, PrivacyIcon } from 'icons';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { SessionStatus } from 'types/session';
 
-const ProfileMenu = () => {
+const HeaderMenu: FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -79,4 +79,4 @@ const ProfileMenu = () => {
   );
 };
 
-export default ProfileMenu;
+export default HeaderMenu;
