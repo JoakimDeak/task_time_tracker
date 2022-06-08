@@ -1,13 +1,12 @@
 import { FC, useState } from 'react';
-import { Button, Grid, Typography, useTheme } from '@mui/material';
-import { useSession, signIn } from 'next-auth/react';
-import { SessionStatus } from 'types/session';
-import ProfileMenu from './ProfileMenu';
+import { Grid, Typography, useTheme } from '@mui/material';
+import Link from 'next/link';
+import HeaderMenu from './HeaderMenu';
 
 const Header: FC = () => {
-  const session = useSession();
   const theme = useTheme();
   const [height, setHeight] = useState(0);
+
   return (
     <>
       <Grid
@@ -31,17 +30,13 @@ const Header: FC = () => {
           zIndex: 1000
         }}
       >
-        <Grid container item xs="auto">
-          <Typography sx={{ fontWeight: 600, color: '#eee' }}>Task Time Tracker</Typography>
-        </Grid>
+        <Link href="/" passHref>
+          <Grid container item xs="auto" sx={{ cursor: 'pointer' }}>
+            <Typography sx={{ fontWeight: 600, color: '#eee' }}>Task Time Tracker</Typography>
+          </Grid>
+        </Link>
         <Grid item xs="auto">
-          {session.status === SessionStatus.AUTHENTICATED ? (
-            <ProfileMenu />
-          ) : (
-            <Button color="info" variant="outlined" sx={{ color: theme.palette.text.primary }} onClick={() => signIn()}>
-              Sign In
-            </Button>
-          )}
+          <HeaderMenu />
         </Grid>
       </Grid>
       <div style={{ height: height }} />
