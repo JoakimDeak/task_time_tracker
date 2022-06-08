@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { Container, LinearProgress, Paper, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Container, LinearProgress, Paper, useMediaQuery, useTheme } from '@mui/material';
 import Timer from './Timer';
 import { v4 as uuid } from 'uuid';
 import TimerCreator from './TimerCreator';
